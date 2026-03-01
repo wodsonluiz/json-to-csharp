@@ -10,7 +10,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:json-to-csharp.convert"
+    "onCommand:json-to-csharp.convert",
+    "onLanguage:json"
   ],
   "main": "./out/extension.js",
   "contributes": {

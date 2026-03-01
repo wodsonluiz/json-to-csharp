@@ -1,71 +1,134 @@
-# json-to-csharp README
+# JSON to C# DTO Generator
 
-This is the README for your extension "json-to-csharp". After writing up a brief description, we recommend including the following sections.
+Convert JSON files into clean C# DTO classes directly inside Visual Studio Code.
 
-## Features
-
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
-
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
+This extension generates minimal C# classes (DTOs) from JSON with proper formatting and saves them automatically in the same folder as the source JSON file.
 
 ---
 
-## Following extension guidelines
+## ✨ Features
 
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
+* Convert JSON to clean C# DTO classes
+* Detect root object automatically
+* Generate properly formatted C# code (4-space indentation)
+* Remove Quicktype helpers, converters, and attributes
+* Save `.cs` file automatically next to the JSON file
+* Overwrite confirmation if file already exists
+* Works from Command Palette, Editor, or Explorer context menu
 
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
+---
 
-## Working with Markdown
+## 🚀 Usage
 
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
+### Method 1 — Command Palette
 
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
+1. Open a JSON file
+2. Press `Cmd+Shift+P` (macOS) or `Ctrl+Shift+P` (Windows/Linux)
+3. Run **Convert JSON to C# Class**
 
-## For more information
+---
 
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
+### Method 2 — Editor Context Menu
 
-**Enjoy!**
+1. Open a JSON file in the editor
+2. Right-click inside the editor
+3. Click **Convert JSON to C# Class**
+
+---
+
+### Method 3 — Explorer Context Menu
+
+1. Right-click a `.json` file in the Explorer
+2. Click **Convert JSON to C# Class**
+
+---
+
+## 📄 Output
+
+Given this JSON:
+
+```json
+{
+  "employee": {
+    "name": "John",
+    "salary": 56000,
+    "married": true
+  }
+}
+```
+
+The extension generates:
+
+```csharp
+public class Employee
+{
+    public string Name { get; set; }
+    public long Salary { get; set; }
+    public bool Married { get; set; }
+}
+```
+
+The file is saved automatically as:
+
+```
+Employee.cs
+```
+
+in the same directory as the source JSON file.
+
+---
+
+## 🧠 Smart Behavior
+
+* If the JSON has a single root property, that property name becomes the class name
+* If not, the JSON filename is used
+* Only DTO classes are generated (no serialization helpers)
+* Duplicate or helper classes are removed
+* Code is automatically formatted
+
+---
+
+## 📦 Requirements
+
+No external tools required.
+Everything runs locally inside VS Code.
+
+---
+
+## 🛠 Extension Settings
+
+Currently no configurable settings.
+Future versions may include namespace and record support.
+
+---
+
+## 💡 Example Workflow
+
+1. Receive JSON from API or backend
+2. Save as `employee.json`
+3. Right-click → Convert JSON to C# Class
+4. Use generated `Employee.cs` in your .NET project
+
+---
+
+## 🧩 Why this extension?
+
+Many JSON → C# tools generate large files with converters and attributes.
+This extension focuses on **clean DTO generation only**, ideal for:
+
+* ASP.NET models
+* DTOs
+* API contracts
+* Domain classes
+
+---
+
+## 📄 License
+
+MIT
+
+---
+
+## 👤 Author
+
+Wodson Correia

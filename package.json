@@ -56,5 +56,10 @@
   },
   "dependencies": {
     "quicktype-core": "^23.2.6"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wodsonluiz/json-to-csharp"
+  },
+  "publisher": "wodson"
 }

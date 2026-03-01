@@ -9,3 +9,8 @@ vsc-extension-quickstart.md
 **/*.map
 **/*.ts
 **/.vscode-test.*
+node_modules/**
+src/**
+tsconfig.json
+package-lock.json
+README_DEV.md

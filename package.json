@@ -2,7 +2,7 @@
   "name": "json-to-csharp",
   "displayName": "json-to-csharp",
   "description": "Extension convert json to csharp class",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "engines": {
     "vscode": "^1.109.0"
   },

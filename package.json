@@ -17,7 +17,23 @@
         "command": "json-to-csharp.convert",
         "title": "Convert JSON to C# Class"
       }
-    ]
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "json-to-csharp.convert",
+          "when": "editorLangId == json",
+          "group": "navigation"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "json-to-csharp.convert",
+          "when": "resourceExtname == .json",
+          "group": "navigation"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

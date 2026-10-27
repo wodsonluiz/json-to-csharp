@@ -1,9 +1,12 @@
 # Change Log
 
-All notable changes to the "json-to-csharp" extension will be documented in this file.
-
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
-
 ## [Unreleased]
 
-- Initial release
+- Add official publisher links and a support guide.
+- Declare the existing MIT license, publisher website, and issue tracker in package metadata.
+
+## Published releases
+
+The extension was first published on March 1, 2026. Release versions and dates
+are available in the [Marketplace version history](https://marketplace.visualstudio.com/items?itemName=wodson.json-to-csharp&ssr=false#version-history).
+Implementation history is available in the [repository commits](https://github.com/wodsonluiz/json-to-csharp/commits/main/).

@@ -132,3 +132,13 @@ MIT
 ## 👤 Author
 
 Wodson Correia
+
+## Support and official links
+
+- [Report a bug or request a feature](https://github.com/wodsonluiz/json-to-csharp/issues)
+- [Support guide](SUPPORT.md)
+- [Source code](https://github.com/wodsonluiz/json-to-csharp)
+- [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=wodson.json-to-csharp)
+- [Publisher website](https://wodson.net/projects)
+
+The Marketplace publisher ID is `wodson`; the extension ID is `wodson.json-to-csharp`.

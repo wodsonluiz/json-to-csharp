@@ -13,7 +13,7 @@
     "onCommand:json-to-csharp.convert",
     "onLanguage:json"
   ],
-  "main": "./out/extension.js",
+  "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
@@ -39,20 +39,21 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
+    "vscode:prepublish": "npm run build",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "build": "tsc -p ./",
+    "build": "npm run compile && esbuild src/extension.ts --bundle --platform=node --target=node22 --external:vscode --outfile=dist/extension.js",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src",
-    "test": "vscode-test"
+    "test": "node --test test/*.test.cjs",
+    "package": "vsce package --no-dependencies --out extension.vsix",
+    "check:vsix": "python3 scripts/check-vsix.py extension.vsix"
   },
   "devDependencies": {
-    "@types/mocha": "^10.0.10",
     "@types/node": "^22.19.13",
     "@types/vscode": "^1.109.0",
-    "@vscode/test-cli": "^0.0.12",
-    "@vscode/test-electron": "^2.5.2",
+    "@vscode/vsce": "4.1.0",
+    "esbuild": "0.28.2",
     "eslint": "^9.39.3",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.56.1"

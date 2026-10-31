@@ -1,0 +1,64 @@
+name: Marketplace Trusted Publishing
+
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: Verify OIDC without publishing, or publish an authorized new version
+        required: true
+        type: choice
+        options: [verify-oidc, publish]
+        default: verify-oidc
+      version:
+        description: Exact package.json version authorized for this run (no bump)
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: marketplace-publishing
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    if: github.repository == 'wodsonluiz/json-to-csharp' && github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/build.yml
+    permissions:
+      contents: read
+
+  publish:
+    name: Protected Marketplace publication
+    needs: validate
+    if: github.repository == 'wodsonluiz/json-to-csharp' && github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment: marketplace
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24.18.0'
+      - name: Validate authorized version and protected branch
+        env:
+          AUTHORIZED_VERSION: ${{ inputs.version }}
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/check-release.cjs
+      - run: npm ci --ignore-scripts
+      - name: Recheck dependencies immediately before publishing
+        run: npm audit --audit-level=high
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: extension-vsix
+      - name: Verify federated authentication without publishing
+        if: inputs.operation == 'verify-oidc'
+        run: node scripts/verify-oidc.cjs
+      - name: Publish the already validated VSIX using OIDC
+        if: inputs.operation == 'publish'
+        run: ./node_modules/.bin/vsce publish --oidc --packagePath extension.vsix

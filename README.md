@@ -150,3 +150,14 @@ context menu. The extension writes `filename.yml` beside the saved JSON source,
 keeping objects, arrays, primitive values and nesting. Strings are quoted to avoid
 implicit YAML type changes; integer values are preserved without precision loss.
 Existing output requires overwrite confirmation. No input is sent to a server.
+
+## JSON to C# Record
+
+Run **Convert JSON to C# Record** to write `filename.record.cs`. Records use C# 9
+`init` properties, nullable annotations and the same Quicktype naming/type inference
+as Class conversion. Nested DTOs are records too; collections retain their inferred
+element types. Optional or null values are nullable; heterogeneous values use
+`object`. Top-level arrays and primitives are represented by a named record with a
+`Value` property. Non-null reference properties use `default!` for initialization.
+Choose Class or Record for a given DTO type in your C# project to avoid duplicate
+type declarations. The existing Class command and its output are unchanged.

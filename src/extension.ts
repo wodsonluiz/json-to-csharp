@@ -1,3 +1,4 @@
+import { generateCSharpRecords } from "./csharpRecordGenerator";
 import { jsonToYaml } from "./yamlConverter";
 import { registerTextConversion } from "./textConversionCommand";
 import * as vscode from "vscode";
@@ -44,6 +45,7 @@ async function jsonToCSharp(json: string, fallbackRoot: string): Promise<string>
 }
 
 export function activate(context: vscode.ExtensionContext) {
+    registerTextConversion(context, { command: "json-to-csharp.convertToRecord", extension: ".record.cs", convert: generateCSharpRecords });
     registerTextConversion(context, { command: "json-to-csharp.convertToYaml", extension: ".yml", convert: jsonToYaml });
 
     const disposable = vscode.commands.registerCommand(

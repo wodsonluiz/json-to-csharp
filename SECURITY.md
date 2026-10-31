@@ -27,10 +27,13 @@ Only the publishing job can request an OIDC token. PR workflows have no publishi
 credentials and never use `pull_request_target`. Dependency installation uses the
 lockfile and disables lifecycle scripts. Review Dependabot updates normally.
 
-Branch protection must require a PR, one approving review, dismissal of stale
-approvals, the `Quality gate` check, resolution of conversations and no admin
-bypass. A required review or environment approval must be performed by an
-eligible human; do not bypass it to finish the migration.
+Branch protection requires a PR, the up-to-date `Quality gate` check, resolution
+of conversations and no admin bypass. On 2026-10-31 the repository owner explicitly
+authorized temporarily waiving the independent PR approval because this project
+has no collaborators. Zero independent approvals are currently required; restore
+one approval with stale-approval dismissal when an eligible reviewer is available.
+This exception does not waive any automated security check or the human approval
+of the `marketplace` environment. The owner remains the release approver.
 
 ## Dependency audit baseline (2026-10-31)
 
@@ -60,3 +63,4 @@ possible secret format can be detected.
 Official references:
 - https://code.visualstudio.com/api/working-with-extensions/publishing-extension#publish-with-github-actions-and-trusted-publishing
 - https://github.com/microsoft/vscode-vsce#trusted-publishing
+

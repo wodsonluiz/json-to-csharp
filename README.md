@@ -1,171 +1,158 @@
-# JSON to C# DTO Generator
+<p align="center">
+  <img src="icon.png" width="112" height="112" alt="JSON to C# extension icon">
+</p>
 
-Convert JSON files into clean C# DTO classes directly inside Visual Studio Code.
+<h1 align="center">JSON to C#</h1>
+<p align="center">Turn JSON into C# classes, C# records, YAML, and XML. Right inside VS Code.</p>
 
-This extension generates minimal C# classes (DTOs) from JSON with proper formatting and saves them automatically in the same folder as the source JSON file.
+<p align="center">
+  <a href="https://github.com/wodsonluiz/json-to-csharp/actions/workflows/build.yml"><img src="https://github.com/wodsonluiz/json-to-csharp/actions/workflows/build.yml/badge.svg?branch=main" alt="Build and security workflow status"></a>
+  <a href="https://github.com/wodsonluiz/json-to-csharp/actions/workflows/build.yml"><img src="https://img.shields.io/github/actions/workflow/status/wodsonluiz/json-to-csharp/build.yml?branch=main&amp;label=tests" alt="Tests workflow status"></a>
+  <a href="https://github.com/wodsonluiz/json-to-csharp/releases/latest"><img src="https://img.shields.io/github/v/release/wodsonluiz/json-to-csharp?label=release" alt="Latest GitHub release"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=wodson.json-to-csharp"><img src="https://badgen.net/vs-marketplace/v/wodson.json-to-csharp?label=marketplace" alt="Visual Studio Marketplace version"></a>
+</p>
 
----
+![Real VS Code demonstration: open employee.json, generate a C# class and record, then convert the same JSON to XML and YAML.](docs/demo.gif)
 
-## ✨ Features
+## Features
 
-* Convert JSON to clean C# DTO classes
-* Detect root object automatically
-* Generate properly formatted C# code (4-space indentation)
-* Remove Quicktype helpers, converters, and attributes
-* Save `.cs` file automatically next to the JSON file
-* Overwrite confirmation if file already exists
-* Works from Command Palette, Editor, or Explorer context menu
+- **Four outputs, one workflow.** Generate DTO classes or records, or export YAML and XML.
+- **Inferred C# types.** Nested models, collections, and nullable record properties, without serialization helpers.
+- **Predictable files.** Output opens beside the source; replacing an existing file requires confirmation.
+- **Local conversion.** Your JSON stays in VS Code. No account, external service, or added telemetry.
 
----
+## Installation
 
-## 🚀 Usage
+Install [JSON to C# from the Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=wodson.json-to-csharp), or run:
 
-### Method 1 — Command Palette
+```sh
+code --install-extension wodson.json-to-csharp
+```
 
-1. Open a JSON file
-2. Press `Cmd+Shift+P` (macOS) or `Ctrl+Shift+P` (Windows/Linux)
-3. Run **Convert JSON to C# Class**
+Requires VS Code **1.109.0 or later**. Conversion needs no separate .NET or Python installation.
 
----
+## Usage
 
-### Method 2 — Editor Context Menu
+Save and open a `.json` file. Open the Command Palette with **Ctrl+Shift+P** (**Cmd+Shift+P** on macOS), then choose a conversion. The same commands are available in the JSON editor's context menu and by right-clicking a JSON file in Explorer.
 
-1. Open a JSON file in the editor
-2. Right-click inside the editor
-3. Click **Convert JSON to C# Class**
+| Command | Output for `employee.json` |
+| --- | --- |
+| Convert JSON to C# Class | `Employee.cs` (inferred root type name) |
+| Convert JSON to C# Record | `employee.record.cs` |
+| Convert JSON to YAML | `employee.yml` |
+| Convert JSON to XML | `employee.xml` |
 
----
-
-### Method 3 — Explorer Context Menu
-
-1. Right-click a `.json` file in the Explorer
-2. Click **Convert JSON to C# Class**
-
----
-
-## 📄 Output
-
-Given this JSON:
+These examples use the same input shown in the demonstration:
 
 ```json
 {
   "employee": {
-    "name": "John",
-    "salary": 56000,
-    "married": true
+    "name": "Ada Lovelace",
+    "age": 36,
+    "active": true,
+    "skills": ["C#", "TypeScript"]
   }
 }
 ```
 
-The extension generates:
+### C# Class
+
+Generate clean DTOs with `get; set;` properties. A single root property supplies the type name; otherwise, the source filename is used. Existing Class conversion behavior is preserved.
 
 ```csharp
 public class Employee
 {
     public string Name { get; set; }
-    public long Salary { get; set; }
-    public bool Married { get; set; }
+
+    public long Age { get; set; }
+
+    public bool Active { get; set; }
+
+    public string[] Skills { get; set; }
 }
 ```
 
-The file is saved automatically as:
+### C# Record
 
+Generate C# 9 records with `init` properties and nullable annotations. Nested models become records; optional and null values are nullable. Top-level arrays and primitives use a named record with a `Value` property. Mixed types use `object`; non-null references use `default!` initialization.
+
+```csharp
+#nullable enable
+
+using System;
+using System.Collections.Generic;
+
+public record Employee
+{
+    public string Name { get; init; } = default!;
+    public long Age { get; init; }
+    public bool Active { get; init; }
+    public string[] Skills { get; init; } = default!;
+}
 ```
-Employee.cs
+
+Choose either Class or Record for a given DTO type in your C# project to avoid duplicate type declarations.
+
+### YAML
+
+Objects, arrays, primitive values, and nesting are preserved. Quoted strings prevent implicit YAML type changes; integer literals retain their precision.
+
+```yaml
+"employee":
+  "name": "Ada Lovelace"
+  "age": 36
+  "active": true
+  "skills":
+    - "C#"
+    - "TypeScript"
 ```
 
-in the same directory as the source JSON file.
+### XML
 
----
+A single `json` root and explicit type attributes preserve structure. Arrays use indexed `item` elements. Invalid or reserved element names are represented by escaped `name` attributes. Invalid XML 1.0 characters are rejected; input cannot introduce XML markup, DTDs, or entities.
 
-## 🧠 Smart Behavior
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<json type="object">
+  <employee type="object">
+    <name type="string">Ada Lovelace</name>
+    <age type="number">36</age>
+    <active type="boolean">true</active>
+    <skills type="array">
+      <item type="string" index="0">C#</item>
+      <item type="string" index="1">TypeScript</item>
+    </skills>
+  </employee>
+</json>
+```
 
-* If the JSON has a single root property, that property name becomes the class name
-* If not, the JSON filename is used
-* Only DTO classes are generated (no serialization helpers)
-* Duplicate or helper classes are removed
-* Code is automatically formatted
+See the [complete XML mapping](docs/xml-mapping.md) for edge cases and examples.
 
----
+## Development
 
-## 📦 Requirements
+Use Node.js **24**, .NET SDK **8** (record compilation tests), and Python **3** (security and XML tests).
 
-No external tools required.
-Everything runs locally inside VS Code.
+```sh
+npm ci --ignore-scripts
+npm run build
+npm test
+npm run audit:security
+npm run package
+npm run check:vsix
+```
 
----
+`npm test` includes compilation and linting. Press **F5** in VS Code to launch an Extension Development Host. CI additionally runs CodeQL, source/history secret scanning, and packaged-content scanning before its required Quality gate.
 
-## 🛠 Extension Settings
+The [demo capture notes](docs/demo.md) describe the real recording. Maintainers should follow the [OIDC publishing procedure](docs/publishing.md); publication requires protected main, passing checks, and approval of the `marketplace` environment.
 
-Currently no configurable settings.
-Future versions may include namespace and record support.
+## Contributing
 
----
+[Open an issue](https://github.com/wodsonluiz/json-to-csharp/issues) before a substantial change. Branch from current main, keep PRs focused, and include conversion tests and documentation. Run the development checks above; all security checks must pass before merge. See the [support guide](SUPPORT.md) for help.
 
-## 💡 Example Workflow
+## Security
 
-1. Receive JSON from API or backend
-2. Save as `employee.json`
-3. Right-click → Convert JSON to C# Class
-4. Use generated `Employee.cs` in your .NET project
+Read [SECURITY.md](SECURITY.md) for release controls, credential handling, and the time-limited development-dependency exception. Security gates reject new or unapproved findings; a passing build does not mean every dependency advisory is absent.
 
----
+## License
 
-## 🧩 Why this extension?
-
-Many JSON → C# tools generate large files with converters and attributes.
-This extension focuses on **clean DTO generation only**, ideal for:
-
-* ASP.NET models
-* DTOs
-* API contracts
-* Domain classes
-
----
-
-## 📄 License
-
-MIT
-
----
-
-## 👤 Author
-
-Wodson Correia
-
-## Support and official links
-
-- [Report a bug or request a feature](https://github.com/wodsonluiz/json-to-csharp/issues)
-- [Support guide](SUPPORT.md)
-- [Source code](https://github.com/wodsonluiz/json-to-csharp)
-- [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=wodson.json-to-csharp)
-- [Publisher website](https://wodson.net/projects)
-
-The Marketplace publisher ID is `wodson`; the extension ID is `wodson.json-to-csharp`.
-
-## JSON to YAML
-
-Run **Convert JSON to YAML** from the Command Palette or a JSON editor/Explorer
-context menu. The extension writes `filename.yml` beside the saved JSON source,
-keeping objects, arrays, primitive values and nesting. Strings are quoted to avoid
-implicit YAML type changes; integer values are preserved without precision loss.
-Existing output requires overwrite confirmation. No input is sent to a server.
-
-## JSON to C# Record
-
-Run **Convert JSON to C# Record** to write `filename.record.cs`. Records use C# 9
-`init` properties, nullable annotations and the same Quicktype naming/type inference
-as Class conversion. Nested DTOs are records too; collections retain their inferred
-element types. Optional or null values are nullable; heterogeneous values use
-`object`. Top-level arrays and primitives are represented by a named record with a
-`Value` property. Non-null reference properties use `default!` for initialization.
-Choose Class or Record for a given DTO type in your C# project to avoid duplicate
-type declarations. The existing Class command and its output are unchanged.
-
-## JSON to XML
-
-Run **Convert JSON to XML** to write `filename.xml`. Objects, arrays and primitives
-use a deterministic typed mapping beneath one `json` root. Invalid or reserved
-element names are preserved in escaped `name` attributes. Text cannot inject XML
-markup, DTDs or entities, and invalid XML 1.0 characters are rejected before saving.
-See the [mapping and examples](docs/xml-mapping.md) for the complete contract.
+[MIT](LICENSE) · Maintained by [Wodson Correia](https://github.com/wodsonluiz).

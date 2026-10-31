@@ -49,7 +49,8 @@ of the `marketplace` environment. The owner remains the release approver.
 The initial audit found 6 High, 18 Moderate and 1 Low advisories. Compatible lockfile
 updates and removal of the unused Electron/Mocha test runner eliminated all High
 and Critical advisories. Node's built-in runner now exercises conversion and the
-bundled extension. Extension source behavior and version 1.0.6 are unchanged.
+bundled extension. That security-only baseline preserved source behavior and
+version 1.0.6.
 The production dependency audit reports zero vulnerabilities.
 
 After the reviewed ESLint 10 migration, the full audit retains 11 Moderate entries
@@ -80,7 +81,7 @@ has only the bundled runtime, manifest, documentation, license and icon. An
 eligible maintainer must revisit upstream releases before the deadline; expired
 exceptions block all builds/releases. Dependabot tracks fixes. The Node 22 type
 definitions were updated compatibly; runtime dependencies and extension version
-remain unchanged.
+were unchanged in that security-only baseline.
 
 Negative gate tests cover rejected severities/advisories, runtime paths, exception
 expiry, registry errors, SARIF findings/failure/invalid output, release identity,
@@ -99,9 +100,32 @@ them; a clean Gitleaks scan is evidence for its ruleset, not a guarantee that ev
 possible secret format can be detected.
 
 Current diagnostic, correction plan and validation evidence: `docs/devsecops-finalization.md`.
-Release procedure and deferred real-publication evidence: `docs/publishing.md`.
+Release procedure and publication evidence: `docs/publishing.md`.
 
 Official references:
 - https://code.visualstudio.com/api/working-with-extensions/publishing-extension#publish-with-github-actions-and-trusted-publishing
 - https://github.com/microsoft/vscode-vsce#trusted-publishing
 
+## Feature release 1.1.0
+
+The subsequent feature PRs #20, #21 and #22 add YAML, C# Record and XML conversion;
+#23 adds the English README and a real VS Code demonstration. The original Class
+conversion is preserved. YAML 2.9.1 was promoted from an existing transitive
+package to an exactly pinned direct runtime dependency; the production audit
+still reports zero vulnerabilities. No new advisory exception or unsafe override
+was introduced. The remaining 11 development-only Moderate entries and their
+expiry are unchanged.
+
+The test suite now has 23 Node tests plus 4 Python package-security tests,
+including actual C# 9 compilation with nullable warnings treated as errors,
+independent XML round trips, escaping/injection cases, file-write cancellation,
+all four bundled commands and negative security gate tests. The VSIX permits
+exactly nine entries, adding only the reviewed demo GIF to the prior eight-file
+allowlist. No tests, source fixtures, credential files or tool installations ship.
+
+Release preparation is version 1.1.0; it does not itself prove publication.
+The required marketplace approval, protected-main identity/version preflight,
+same-run VSIX SHA-256 checks and OIDC-only publication remain mandatory. Recheck
+the Marketplace policy against the exact repository, publish.yml and marketplace
+before release. Confirm public availability and the published manifest/bundle
+before recording migration completion or revoking any obsolete PAT.

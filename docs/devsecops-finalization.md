@@ -101,3 +101,31 @@ advisory remains confined to development tooling. Removed the now-unused
 @eslint/eslintrc name from the exception; advisory, severity, owner, expiry and
 fail-closed checks are unchanged. Runtime dependencies and version 1.0.6 stay
 unchanged. Final updated PR checks and post-merge CI are linked on PR #17.
+
+
+## Subsequent feature release preparation — 1.1.0
+
+This historical security-only diagnosis above is preserved. The later authorized
+feature work supplies the legitimate release deferred by that diagnosis:
+
+- YAML: PR #20, merge `81fe3807dfc68bdc0b3b16d87ea1d9148ffa9cf3`, checks https://github.com/wodsonluiz/json-to-csharp/actions/runs/41236256223.
+- C# Record: PR #21, merge `bd345e7bce971706be48e5a07f48f862aa8d6594`, checks https://github.com/wodsonluiz/json-to-csharp/actions/runs/41236602935.
+- XML: issue #19 and PR #22, merge `84067a8abd86c97c0b78d8c2d2d587c0cb57e3b7`, checks https://github.com/wodsonluiz/json-to-csharp/actions/runs/41237074065.
+- English README and real VS Code GIF: PR #23, merge `35576d8f5efab099de96a2289413b812b837955c`, checks https://github.com/wodsonluiz/json-to-csharp/actions/runs/41242270778.
+
+Every PR passed build/tests/SCA/VSIX, CodeQL, source/history Gitleaks, packaged
+Gitleaks and Quality gate before sequential merge. There are now 27 automated
+tests and exactly nine allowed VSIX entries. Production audit remains clean;
+zero High/Critical and the same 11 scoped development-only Moderate entries.
+
+Authenticated settings were rechecked during release preparation: main still
+requires a current Quality gate from GitHub Actions, PRs, conversation resolution
+and no admin bypass; no policy was changed. The marketplace environment permits
+only main (zero tags), requires wodsonluiz review, disables administrator bypass,
+and has no secrets. The Marketplace trust policy is active for exact owner
+wodsonluiz/repository json-to-csharp/workflow publish.yml/environment marketplace.
+
+The version/changelog PR prepares 1.1.0 without creating a tag. Real publication,
+its exact commit/artifact digest, public Marketplace confirmation and subsequent
+GitHub Release must be recorded on the release PR after the approved OIDC run.
+No PAT is revoked merely because release preparation or token exchange passed.

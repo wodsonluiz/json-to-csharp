@@ -81,3 +81,9 @@ Local validation: 9 Node tests plus 4 Python VSIX security tests passed; lint ha
 zero warnings; build, package allowlist/CRC checks, actionlint and Gitleaks history,
 working-tree and packaged scans passed. Full online SCA passed with 0 High/Critical
 and the 12 scoped Moderate entries; production audit had zero vulnerabilities.
+
+The first finalization PR run proved the fail-closed SAST gate by rejecting a new
+insecure-temporary-file finding in the audit report writer. Corrected the actual
+writer to use a private mkdtemp directory outside CI and exclusive, mode-0600 file
+creation in all environments. No SAST suppression or bypass was introduced. The
+permission/database-upload errors from the baseline were absent in that run.

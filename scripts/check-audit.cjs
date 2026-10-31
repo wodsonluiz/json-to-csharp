@@ -42,11 +42,13 @@ if (require.main === module) {
     });
     assert.ok(!result.error && [0, 1].includes(result.status), 'npm audit did not complete');
     const report = JSON.parse(result.stdout);
-    const count = checkAudit(report, require('../package-lock.json'), require('../.github/security/audit-exceptions.json'));
-    const output = path.join(process.env.RUNNER_TEMP || os.tmpdir(), 'json-to-csharp-npm-audit.json');
-    fs.writeFileSync(output, JSON.stringify(report, null, 2));
+    const exception = require('../.github/security/audit-exceptions.json');
+    const count = checkAudit(report, require('../package-lock.json'), exception);
+    const directory = process.env.RUNNER_TEMP || fs.mkdtempSync(path.join(os.tmpdir(), 'json-to-csharp-audit-'));
+    const output = path.join(directory, 'json-to-csharp-npm-audit.json');
+    fs.writeFileSync(output, JSON.stringify(report, null, 2), {flag: 'wx', mode: 0o600});
     console.log(`SCA passed: zero High/Critical; ${count} explicitly reviewed development-only Moderate entries.`);
-    if (count) console.log('GHSA-g3hv-75wg-m249 exception expires 2026-11-30; all other findings block.');
+    if (count) console.log(`Reviewed exception expires ${exception.expires}; all other findings block.`);
   } catch (error) {
     console.error(error.message);
     process.exitCode = 1;

@@ -36,7 +36,7 @@ test('packaged bundle registers and executes the conversion command', async () =
   let command;
   let written;
   const vscode = {
-    commands: {registerCommand(name, callback) { assert.equal(name, 'json-to-csharp.convert'); command=callback; return {dispose(){}}; }},
+    commands: {registerCommand(name, callback) { if (name === 'json-to-csharp.convert') command=callback; return {dispose(){}}; }},
     Uri: {file: fsPath => ({fsPath})},
     workspace: {
       fs: {readFile: async () => Buffer.from('{"employee":{"name":"John"}}'), stat: async () => {throw new Error('missing');}, writeFile: async (uri, data) => { written={uri,data}; }},
@@ -49,7 +49,7 @@ test('packaged bundle registers and executes the conversion command', async () =
   bundledModule.require = name => name === 'vscode' ? vscode : bundleRequire(name);
   bundledModule._compile(fs.readFileSync('dist/extension.js','utf8'), bundledModule.id);
   const context={subscriptions:[]}; bundledModule.exports.activate(context);
-  assert.equal(context.subscriptions.length,1);
+  assert.ok(context.subscriptions.length >= 1);
   await command({fsPath:'/tmp/employee.json'});
   assert.equal(written.uri.fsPath,'/tmp/Employee.cs');
   assert.match(written.data.toString(),/public class Employee/);

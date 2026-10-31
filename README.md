@@ -142,3 +142,11 @@ Wodson Correia
 - [Publisher website](https://wodson.net/projects)
 
 The Marketplace publisher ID is `wodson`; the extension ID is `wodson.json-to-csharp`.
+
+## JSON to YAML
+
+Run **Convert JSON to YAML** from the Command Palette or a JSON editor/Explorer
+context menu. The extension writes `filename.yml` beside the saved JSON source,
+keeping objects, arrays, primitive values and nesting. Strings are quoted to avoid
+implicit YAML type changes; integer values are preserved without precision loss.
+Existing output requires overwrite confirmation. No input is sent to a server.

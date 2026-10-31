@@ -11,7 +11,8 @@
   ],
   "activationEvents": [
     "onCommand:json-to-csharp.convert",
-    "onLanguage:json"
+    "onLanguage:json",
+    "onCommand:json-to-csharp.convertToYaml"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -19,6 +20,10 @@
       {
         "command": "json-to-csharp.convert",
         "title": "Convert JSON to C# Class"
+      },
+      {
+        "command": "json-to-csharp.convertToYaml",
+        "title": "Convert JSON to YAML"
       }
     ],
     "menus": {
@@ -27,11 +32,21 @@
           "command": "json-to-csharp.convert",
           "when": "editorLangId == json",
           "group": "navigation"
+        },
+        {
+          "command": "json-to-csharp.convertToYaml",
+          "when": "editorLangId == json",
+          "group": "navigation"
         }
       ],
       "explorer/context": [
         {
           "command": "json-to-csharp.convert",
+          "when": "resourceExtname == .json",
+          "group": "navigation"
+        },
+        {
+          "command": "json-to-csharp.convertToYaml",
           "when": "resourceExtname == .json",
           "group": "navigation"
         }
@@ -60,7 +75,8 @@
     "typescript-eslint": "^8.56.1"
   },
   "dependencies": {
-    "quicktype-core": "^23.2.6"
+    "quicktype-core": "^23.2.6",
+    "yaml": "2.9.1"
   },
   "repository": {
     "type": "git",

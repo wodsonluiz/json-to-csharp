@@ -60,7 +60,7 @@
     "typescript-eslint": "^8.56.1"
   },
   "dependencies": {
-    "quicktype-core": "^23.2.6"
+    "quicktype-core": "^26.0.0"
   },
   "repository": {
     "type": "git",

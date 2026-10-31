@@ -8,8 +8,11 @@ assert.ok(files.length, 'CodeQL produced no SARIF');
 let findings = 0;
 for (const file of files) {
   const report = JSON.parse(fs.readFileSync(path.join(directory, file), 'utf8'));
-  assert.ok(report.runs?.length, 'Missing CodeQL runs');
+  assert.equal(report.version, '2.1.0', 'Unexpected SARIF format');
+  assert.ok(Array.isArray(report.runs) && report.runs.length, 'Missing CodeQL runs');
   for (const run of report.runs) {
+    assert.equal(run.tool?.driver?.name, 'CodeQL', 'Unexpected SAST producer');
+    assert.ok(Array.isArray(run.results), 'Missing SARIF results');
     assert.ok(!run.invocations?.some(invocation => invocation.executionSuccessful === false), 'CodeQL execution failed');
     for (const result of run.results || []) {
       // Block every reported finding, including suppressed findings; no implicit exceptions.

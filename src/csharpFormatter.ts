@@ -7,19 +7,27 @@ export function extractAndFormatClasses(full: string): string {
 
     while ((match = classHeader.exec(full)) !== null) {
         const name = match[1];
-        if (seen.has(name)) continue;
+        if (seen.has(name)) {
+            continue;
+        }
         seen.add(name);
 
         let start = match.index;
         let braceIndex = full.indexOf("{", start);
-        if (braceIndex === -1) continue;
+        if (braceIndex === -1) {
+            continue;
+        }
 
         let depth = 0;
         let end = braceIndex;
 
         for (let i = braceIndex; i < full.length; i++) {
-            if (full[i] === "{") depth++;
-            if (full[i] === "}") depth--;
+            if (full[i] === "{") {
+                depth++;
+            }
+            if (full[i] === "}") {
+                depth--;
+            }
             if (depth === 0) {
                 end = i + 1;
                 break;

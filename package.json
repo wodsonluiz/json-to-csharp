@@ -44,10 +44,11 @@
     "watch": "tsc -watch -p ./",
     "build": "npm run compile && esbuild src/extension.ts --bundle --platform=node --target=node22 --external:vscode --outfile=dist/extension.js",
     "pretest": "npm run compile && npm run lint",
-    "lint": "eslint src",
-    "test": "node --test test/*.test.cjs",
+    "lint": "eslint src --max-warnings=0",
+    "test": "node --test test/*.test.cjs && python3 -m unittest discover -s test -p \"*_test.py\"",
     "package": "vsce package --no-dependencies --out extension.vsix",
-    "check:vsix": "python3 scripts/check-vsix.py extension.vsix"
+    "check:vsix": "python3 scripts/check-vsix.py extension.vsix",
+    "audit:security": "node scripts/check-audit.cjs"
   },
   "devDependencies": {
     "@types/node": "^22.19.13",

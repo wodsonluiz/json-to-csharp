@@ -52,14 +52,17 @@ and Critical advisories. Node's built-in runner now exercises conversion and the
 bundled extension. Extension source behavior and version 1.0.6 are unchanged.
 The production dependency audit reports zero vulnerabilities.
 
-The compatible-update recheck retains 12 Moderate entries from one advisory:
+After the reviewed ESLint 10 migration, the full audit retains 11 Moderate entries
+from one advisory:
 [GHSA-g3hv-75wg-m249 / CVE-2026-118764](https://github.com/advisories/GHSA-g3hv-75wg-m249).
-It concerns glob-pattern amplification in minimatch below 11.0.1. ESLint 9 accepts
-minimatch 3; typescript-eslint 8 and vsce 4.1.0 accept minimatch 10. No patched
-version fits those contracts. Do not force a major override or the unrelated
-ESLint/typescript-eslint downgrades suggested by npm audit. ESLint 9 also reports
-an upstream deprecation notice; migrating its major version requires a separate
-compatibility review rather than suppressing the notice.
+It concerns glob-pattern amplification in minimatch below 11.0.1. ESLint 10,
+typescript-eslint 8 and vsce 4.1.0 accept minimatch 10; no patched version fits
+those contracts. Do not force a major override or the unrelated downgrades
+suggested by npm audit. ESLint 10.13.0 was reviewed separately in PR #17: it is
+supported by typescript-eslint 8.72.1 and the configured Node runtime, and all
+build, lint, tests, security and packaging checks passed. The obsolete ESLint 9
+line and its deprecation notice are removed. The remaining exception is unchanged
+in severity, advisory, development-only restriction and deadline.
 
 Exception owner: **wodsonluiz**. Expiry: **2026-11-30 23:59:59 UTC**. Scope: only the
 exact advisory, Moderate severity, named packages and lockfile paths marked

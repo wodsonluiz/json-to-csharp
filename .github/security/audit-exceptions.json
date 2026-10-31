@@ -3,11 +3,10 @@
   "severity": "moderate",
   "owner": "wodsonluiz",
   "expires": "2026-11-30T23:59:59Z",
-  "reason": "Development-only glob-pattern DoS. Current ESLint 9, typescript-eslint 8 and vsce 4 require minimatch 3/10; patched minimatch 11 is outside their supported ranges. Patterns/configuration in release jobs come from protected main, not JSON input. PR jobs are unprivileged and time-limited. No runtime dependency is affected. Review upstream fixes before expiry; no major override or forced downgrade.",
+  "reason": "Development-only glob-pattern DoS. Reviewed ESLint 10, typescript-eslint 8 and vsce 4 require minimatch 10; patched minimatch 11 is outside their supported ranges. Patterns/configuration in release jobs come from protected main, not JSON input. PR jobs are unprivileged and time-limited. No runtime dependency is affected. Review upstream fixes before expiry; no major override or forced downgrade.",
   "packages": [
     "@eslint-community/eslint-utils",
     "@eslint/config-array",
-    "@eslint/eslintrc",
     "@typescript-eslint/eslint-plugin",
     "@typescript-eslint/parser",
     "@typescript-eslint/type-utils",

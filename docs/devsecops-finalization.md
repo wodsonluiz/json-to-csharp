@@ -87,3 +87,17 @@ insecure-temporary-file finding in the audit report writer. Corrected the actual
 writer to use a private mkdtemp directory outside CI and exclusive, mode-0600 file
 creation in all environments. No SAST suppression or bypass was introduced. The
 permission/database-upload errors from the baseline were absent in that run.
+
+## Follow-up dependency review — PR #17
+
+Reviewed ESLint 10.13.0 separately after finalization: typescript-eslint 8.72.1
+explicitly supports ESLint 10, and Node 24 CI satisfies the engine requirement.
+The unmodified dependency PR passed all five security/quality jobs:
+https://github.com/wodsonluiz/json-to-csharp/actions/runs/41209596860
+
+This removes the deprecated ESLint 9 line and the @eslint/eslintrc dependency.
+The full audit improves from 12 to 11 Moderate entries; the same single minimatch
+advisory remains confined to development tooling. Removed the now-unused
+@eslint/eslintrc name from the exception; advisory, severity, owner, expiry and
+fail-closed checks are unchanged. Runtime dependencies and version 1.0.6 stay
+unchanged. Final updated PR checks and post-merge CI are linked on PR #17.

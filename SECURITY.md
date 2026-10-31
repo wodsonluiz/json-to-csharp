@@ -17,13 +17,22 @@ republished; authorize a new version through a reviewed PR for the next real
 release. Do not create a version solely to test authentication.
 
 Every release reruns compilation, conversion tests (including the bundled command),
-full dependency audit, CodeQL security-extended, full fetched-history and source
+full dependency audit with an expiring advisory-specific exception, CodeQL
+security-extended, full fetched-history and source
 secret scanning, VSIX identity/content allowlist validation and packaged secret
-scanning. Any High/Critical dependency advisory or any CodeQL/secret finding blocks
+scanning. Any High/Critical dependency advisory, unreviewed or expired Moderate advisory,
+or any CodeQL/secret finding blocks
 publication. Scanner/download failures also block it. SARIF is retained as an
 artifact; uploading a security alert alone is not treated as a passing security gate.
-Actions are pinned to commit SHAs; Gitleaks is pinned to a version and SHA-256.
-Only the publishing job can request an OIDC token. PR workflows have no publishing
+Actions are pinned to commit SHAs and repository settings enforce full-SHA pins;
+Gitleaks is pinned to a version and SHA-256. All external fork contributors require
+workflow approval. Default token access is read-only and Actions cannot create or
+approve PRs.
+Only the publishing job can request an OIDC token. Only SAST receives
+`security-events: read`; the reusable caller grants the necessary permission
+ceiling. SARIF and optional CodeQL database uploads to the Code Scanning service
+are explicitly disabled, while local analysis, a strict SARIF gate and retained
+SARIF evidence remain mandatory. This avoids granting security-events:write. PR workflows have no publishing
 credentials and never use `pull_request_target`. Dependency installation uses the
 lockfile and disables lifecycle scripts. Review Dependabot updates normally.
 
@@ -43,12 +52,38 @@ and Critical advisories. Node's built-in runner now exercises conversion and the
 bundled extension. Extension source behavior and version 1.0.6 are unchanged.
 The production dependency audit reports zero vulnerabilities.
 
-The full audit retains 12 Moderate entries propagated from `minimatch <11.0.1`
-through ESLint, typescript-eslint and vsce. These are development/packaging tools;
-the runtime VSIX contains only the bundled extension, manifest, documentation,
-license and icon. Do not force an incompatible minimatch major override. Track
-upstream fixes through Dependabot and re-audit before each release. There are no
-High/Critical exceptions. Revisit this baseline when dependencies change.
+The compatible-update recheck retains 12 Moderate entries from one advisory:
+[GHSA-g3hv-75wg-m249 / CVE-2026-118764](https://github.com/advisories/GHSA-g3hv-75wg-m249).
+It concerns glob-pattern amplification in minimatch below 11.0.1. ESLint 9 accepts
+minimatch 3; typescript-eslint 8 and vsce 4.1.0 accept minimatch 10. No patched
+version fits those contracts. Do not force a major override or the unrelated
+ESLint/typescript-eslint downgrades suggested by npm audit. ESLint 9 also reports
+an upstream deprecation notice; migrating its major version requires a separate
+compatibility review rather than suppressing the notice.
+
+Exception owner: **wodsonluiz**. Expiry: **2026-11-30 23:59:59 UTC**. Scope: only the
+exact advisory, Moderate severity, named packages and lockfile paths marked
+`dev: true`, in `.github/security/audit-exceptions.json`. `npm run audit:security`
+performs the complete online audit and enforces this scope and deadline in CI and
+immediately before OIDC use. It rejects registry failures, missing reports, all
+High/Critical, new advisories and any affected runtime dependency. There are no
+High/Critical exceptions and no broad advisory suppression.
+
+Residual risk is build-time CPU/memory exhaustion from malicious glob patterns.
+Release patterns/configuration come from protected main; extension JSON is not
+passed to these tool glob matchers. PR jobs have read-only access, no environment
+or OIDC identity, and bounded timeouts. Production audit remains clean. The VSIX
+has only the bundled runtime, manifest, documentation, license and icon. An
+eligible maintainer must revisit upstream releases before the deadline; expired
+exceptions block all builds/releases. Dependabot tracks fixes. The Node 22 type
+definitions were updated compatibly; runtime dependencies and extension version
+remain unchanged.
+
+Negative gate tests cover rejected severities/advisories, runtime paths, exception
+expiry, registry errors, SARIF findings/failure/invalid output, release identity,
+stale/unprotected main, and VSIX additions, replacements, duplicates/corruption.
+A SHA-256 checksum accompanies the built VSIX and is verified again before
+package scanning and before either OIDC verification or publication.
 
 ## Credentials and migration evidence
 
@@ -59,6 +94,9 @@ obsolete PAT at its issuer and remove its GitHub secret. Never print credentials
 or OIDC tokens in logs. Report newly discovered credentials privately and revoke
 them; a clean Gitleaks scan is evidence for its ruleset, not a guarantee that every
 possible secret format can be detected.
+
+Current diagnostic, correction plan and validation evidence: `docs/devsecops-finalization.md`.
+Release procedure and deferred real-publication evidence: `docs/publishing.md`.
 
 Official references:
 - https://code.visualstudio.com/api/working-with-extensions/publishing-extension#publish-with-github-actions-and-trusted-publishing

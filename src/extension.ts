@@ -112,7 +112,9 @@ export function activate(context: vscode.ExtensionContext) {
                         "Yes",
                         "No"
                     );
-                    if (answer !== "Yes") return;
+                    if (answer !== "Yes") {
+                        return;
+                    }
                 }
 
                 await vscode.workspace.fs.writeFile(

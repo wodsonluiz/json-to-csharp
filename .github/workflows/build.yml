@@ -28,15 +28,18 @@ jobs:
           node-version: '24.18.0'
       - run: npm ci --ignore-scripts
       - name: Block High and Critical dependencies (including build tools)
-        run: npm audit --audit-level=high
+        run: npm run audit:security
       - run: npm run build
       - run: npm test
       - run: npm run package
       - run: npm run check:vsix
+      - run: sha256sum extension.vsix > extension.vsix.sha256
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: extension-vsix
-          path: extension.vsix
+          path: |
+            extension.vsix
+            extension.vsix.sha256
           if-no-files-found: error
           retention-days: 7
 
@@ -60,6 +63,9 @@ jobs:
 
   sast:
     name: CodeQL security gate
+    permissions:
+      contents: read
+      security-events: read
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
@@ -74,7 +80,8 @@ jobs:
       - uses: github/codeql-action/analyze@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
         with:
           output: sarif-results
-          upload: false
+          upload: never
+          upload-database: false
       - run: node scripts/check-sarif.cjs sarif-results
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
@@ -97,6 +104,7 @@ jobs:
         with:
           name: extension-vsix
       - run: bash scripts/install-gitleaks.sh
+      - run: sha256sum --check --strict extension.vsix.sha256
       - run: unzip -q extension.vsix -d "$RUNNER_TEMP/vsix-content"
       - run: gitleaks dir --redact --no-banner "$RUNNER_TEMP/vsix-content"
 

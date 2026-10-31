@@ -13,7 +13,8 @@ waived by the owner for this single-maintainer repository (see SECURITY.md).
 
 1. Open Actions → Marketplace Trusted Publishing → Run workflow.
 2. Select main, operation `verify-oidc`, and the exact current manifest version
-   (`1.0.6`). This runs all checks and builds/scans the VSIX with its SHA-256.
+   (`1.1.0` for the prepared feature release). This runs all checks and builds/scans
+   the VSIX with its SHA-256.
 3. After all gates pass, approve the marketplace environment for this run.
 4. The job verifies protected/current main, exact version, full dependency audit
    and artifact checksum, then exchanges a GitHub OIDC token for a short-lived
@@ -23,15 +24,26 @@ waived by the owner for this single-maintainer repository (see SECURITY.md).
 
 ## Publish the next legitimate release
 
-There is no functional change in this security finalization. Version **1.0.6**
-remains current; real publication is intentionally pending a legitimate release.
-Do not bump a version merely to produce publishing evidence.
+Version **1.1.0** is a legitimate minor release: YAML (#20), C# Record (#21),
+and XML (#22), plus the English README and real demonstration (#23). Marketplace
+history was checked before preparation: the latest published version was 1.0.6,
+with no 1.1.0 and no existing GitHub releases or repository tags. Do not bump a version
+merely to produce publishing evidence.
 
-When there is a real user-facing feature/fix, prepare its normal changelog and
-version change in a PR. After required checks and merge, run the same workflow
-on main with operation `publish` and the exact new manifest version. Review and
-approve the marketplace environment. The job publishes the VSIX produced by the
-same protected run with `vsce publish --oidc --packagePath extension.vsix`.
+Merge the version/changelog PR only after all required checks pass. Run the
+workflow on current main with operation `publish` and exact version `1.1.0`.
+After every validation job passes, an authorized human must approve the
+`marketplace` environment for this specific release. The job publishes the VSIX
+produced by that same protected run with
+`vsce publish --oidc --packagePath extension.vsix`.
+
+The run verifies the package SHA-256 after artifact transfer. Record its exact
+main commit, artifact digest and run URL. Confirm 1.1.0 appears in the public
+Marketplace and verify the published manifest/bundle against the tested artifact.
+Only then create GitHub Release `v1.1.0` targeting that exact commit. Until the
+publication job succeeds and Marketplace confirmation is recorded, publication
+and obsolete-PAT revocation remain pending; a prepared version is not evidence
+of deployment. Do not create the release/tag early or move an existing tag.
 
 `--oidc` does not fall back to a PAT if token acquisition/exchange fails. No
 workflow reads a PAT secret, uses `--pat`, or enables publication for PR/fork/tag

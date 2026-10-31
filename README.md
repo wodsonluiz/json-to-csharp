@@ -161,3 +161,11 @@ element types. Optional or null values are nullable; heterogeneous values use
 `Value` property. Non-null reference properties use `default!` for initialization.
 Choose Class or Record for a given DTO type in your C# project to avoid duplicate
 type declarations. The existing Class command and its output are unchanged.
+
+## JSON to XML
+
+Run **Convert JSON to XML** to write `filename.xml`. Objects, arrays and primitives
+use a deterministic typed mapping beneath one `json` root. Invalid or reserved
+element names are preserved in escaped `name` attributes. Text cannot inject XML
+markup, DTDs or entities, and invalid XML 1.0 characters are rejected before saving.
+See the [mapping and examples](docs/xml-mapping.md) for the complete contract.

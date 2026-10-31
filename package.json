@@ -13,7 +13,8 @@
     "onCommand:json-to-csharp.convert",
     "onLanguage:json",
     "onCommand:json-to-csharp.convertToYaml",
-    "onCommand:json-to-csharp.convertToRecord"
+    "onCommand:json-to-csharp.convertToRecord",
+    "onCommand:json-to-csharp.convertToXml"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -29,6 +30,10 @@
       {
         "command": "json-to-csharp.convertToRecord",
         "title": "Convert JSON to C# Record"
+      },
+      {
+        "command": "json-to-csharp.convertToXml",
+        "title": "Convert JSON to XML"
       }
     ],
     "menus": {
@@ -47,6 +52,11 @@
           "command": "json-to-csharp.convertToRecord",
           "when": "editorLangId == json",
           "group": "navigation"
+        },
+        {
+          "command": "json-to-csharp.convertToXml",
+          "when": "editorLangId == json",
+          "group": "navigation"
         }
       ],
       "explorer/context": [
@@ -62,6 +72,11 @@
         },
         {
           "command": "json-to-csharp.convertToRecord",
+          "when": "resourceExtname == .json",
+          "group": "navigation"
+        },
+        {
+          "command": "json-to-csharp.convertToXml",
           "when": "resourceExtname == .json",
           "group": "navigation"
         }

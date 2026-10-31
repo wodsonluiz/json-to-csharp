@@ -24,6 +24,7 @@ class VsixSecurityTests(unittest.TestCase):
             'extension/readme.md': b'readme-content', 'extension/changelog.md': b'changes',
             'extension/LICENSE.txt': b'MIT', 'extension/icon.png': b'icon',
             'extension/dist/extension.js': b'approved-bundle',
+            'extension/docs/demo.gif': b'GIF89a',
         }
 
     def check(self, files=None, corrupt=False, duplicate=False):

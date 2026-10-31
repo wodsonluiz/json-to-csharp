@@ -8,6 +8,7 @@ allowed = {
     '[Content_Types].xml', 'extension.vsixmanifest',
     'extension/package.json', 'extension/readme.md', 'extension/changelog.md',
     'extension/LICENSE.txt', 'extension/icon.png', 'extension/dist/extension.js',
+    'extension/docs/demo.gif',
 }
 with zipfile.ZipFile(sys.argv[1]) as package:
     names = package.namelist()

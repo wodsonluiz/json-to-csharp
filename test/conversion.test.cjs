@@ -35,11 +35,14 @@ test('packaged bundle registers and executes the conversion command', async () =
   const bundleRequire = createRequire(require('node:path').resolve('dist/extension.js'));
   let command;
   let written;
+  class FileSystemError extends Error { constructor() { super('missing'); this.code='FileNotFound'; } }
+  const source = {scheme:'file',path:'/tmp/employee.json',fsPath:'/tmp/employee.json',with(change){return {...this,...change,fsPath:change.path};}};
   const vscode = {
+    FileSystemError,
     commands: {registerCommand(name, callback) { if (name === 'json-to-csharp.convert') command=callback; return {dispose(){}}; }},
     Uri: {file: fsPath => ({fsPath})},
     workspace: {
-      fs: {readFile: async () => Buffer.from('{"employee":{"name":"John"}}'), stat: async () => {throw new Error('missing');}, writeFile: async (uri, data) => { written={uri,data}; }},
+      fs: {readFile: async () => Buffer.from('{"employee":{"name":"John"}}'), stat: async () => {throw new FileSystemError();}, writeFile: async (uri, data) => { written={uri,data}; }},
       openTextDocument: async uri => uri
     },
     window: {showTextDocument: async () => {}, showErrorMessage: message => assert.fail(message)}
@@ -50,7 +53,7 @@ test('packaged bundle registers and executes the conversion command', async () =
   bundledModule._compile(fs.readFileSync('dist/extension.js','utf8'), bundledModule.id);
   const context={subscriptions:[]}; bundledModule.exports.activate(context);
   assert.ok(context.subscriptions.length >= 1);
-  await command({fsPath:'/tmp/employee.json'});
+  await command(source);
   assert.equal(written.uri.fsPath,'/tmp/Employee.cs');
   assert.match(written.data.toString(),/public class Employee/);
 });

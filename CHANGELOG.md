@@ -1,5 +1,20 @@
 # Change Log
 
+## [1.1.1] — Unreleased
+
+### Fixed
+
+- Preserve filesystem provider URI and authority when writing C# classes from remote files.
+- Stop Class conversion on permission or provider failures instead of assuming the destination is absent.
+- Report Explorer read failures and require untitled JSON documents to be saved before conversion.
+- Preserve existing Class output names, DTO formatting and overwrite confirmation.
+
+### Security and validation
+
+- Update ESLint to 10.15.0, typescript-eslint to 8.73.0 and the pinned Marketplace packager to vsce 4.1.1 using the reviewed Dependabot lockfile changes (#34, #35, #36).
+- Add five bundled Class filesystem regression tests. Publication remains gated by build, tests, SCA, CodeQL, secret scans and protected OIDC publishing.
+- Do not extend the existing development-only Moderate exception, which expires on 2026-11-30. This section describes preparation, not a completed Marketplace publication.
+
 ## [1.1.0] — 2026-10-31
 
 ### Added

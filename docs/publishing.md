@@ -63,3 +63,24 @@ initial migration inventory; this does not prove that no PAT exists elsewhere.
 - Before 2026-11-30, revisit the scoped minimatch exception. All new findings and
   expired exceptions block the audit; do not silently extend or broaden it.
 - Keep Action/scanner/tool pins current through reviewed dependency PRs.
+
+## Published patch 1.1.1 — 2026-11-25
+
+[Protected OIDC run 45645566010](https://github.com/wodsonluiz/json-to-csharp/actions/runs/45645566010)
+published `wodson.json-to-csharp v1.1.1` at 15:30 UTC (12:30 America/Sao_Paulo).
+The actual publish step succeeded and verify-only authentication was skipped.
+Build, 32 automated tests, SCA, CodeQL, source/history/package secret scanning,
+VSIX identity/content validation and checksum checks passed in the same run.
+
+Published source commit: `abecc64509d40e197df88bd30a7936b4752065c6`.
+Create GitHub tag/release `v1.1.1` at that exact commit, not current main if it has
+advanced. Marketplace publication and GitHub Release creation are separate:
+the existing workflow does not create a GitHub Release, and the README release
+badge follows GitHub Releases. The latest GitHub Release was still v1.1.0 when
+this publication record was prepared. No tag/release creation is claimed here.
+
+The GitHub integration available in this session cannot create tags/releases;
+the browser is unavailable and the command environment cannot resolve GitHub.
+Use the prepared GitHub release form to finish creating v1.1.1 without republishing
+the already published Marketplace version. Do not replace the automatic release
+badge with a hardcoded version or create another extension version for this task.

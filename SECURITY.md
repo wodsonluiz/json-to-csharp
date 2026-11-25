@@ -9,7 +9,7 @@ these external protections are in place.
 
 The `Marketplace Trusted Publishing` manual workflow defaults to `verify-oidc`.
 Enter the exact current package version; this operation verifies the same OIDC
-exchange used by pinned vsce 4.1.0, discards the temporary credential without
+exchange used by pinned vsce 4.1.1, discards the temporary credential without
 logging it, and does not publish. `publish` sends the VSIX built and scanned in the
 same run using `vsce publish --oidc --packagePath extension.vsix`. There is no PAT
 fallback and no automatic version bump. Existing Marketplace versions cannot be
@@ -129,3 +129,23 @@ same-run VSIX SHA-256 checks and OIDC-only publication remain mandatory. Recheck
 the Marketplace policy against the exact repository, publish.yml and marketplace
 before release. Confirm public availability and the published manifest/bundle
 before recording migration completion or revoking any obsolete PAT.
+
+## Patch preparation 1.1.1 (2026-11-25)
+
+Class conversion now preserves provider URIs, stops on destination permission or
+provider failures, catches Explorer read failures and rejects unsaved documents.
+Five new bundled filesystem regression tests bring the suite to 28 Node tests
+and 4 Python tests. Generated Class DTO behavior and overwrite confirmation remain.
+
+Merged PR #34 upgrades ESLint to 10.15.0. PR #37 incorporates the dependency
+updates from #35 and #36: typescript-eslint 8.73.0 and exactly pinned vsce 4.1.1.
+ESLint and typescript-eslint use patched minimatch 11 through their supported
+ranges. The SCA job for the first PR #37 revision reports zero High/Critical and
+two Moderate development-only entries: vsce and minimatch. The exception package
+allowlist is narrowed to those two names. Its severity, advisory, development-only
+restriction and expiry of 2026-11-30T23:59:59Z are unchanged; no major override or
+blanket suppression is used. The older baseline sections above are historical.
+
+Preparing or merging 1.1.1 does not prove Marketplace publication. The protected
+OIDC workflow and its human environment approval remain required. Verified
+Publisher is a separate Microsoft review; see [the audit](docs/verified-publisher-audit-2026-11-25.md).

@@ -42,6 +42,8 @@ Save and open a `.json` file. Open the Command Palette with **Ctrl+Shift+P** (**
 | Convert JSON to YAML | `employee.yml` |
 | Convert JSON to XML | `employee.xml` |
 
+All commands require saved JSON documents. Class conversion preserves remote filesystem providers and reports permission or provider failures without attempting to overwrite the destination.
+
 These examples use the same input shown in the demonstration:
 
 ```json

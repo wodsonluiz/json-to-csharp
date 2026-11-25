@@ -54,62 +54,74 @@ export function activate(context: vscode.ExtensionContext) {
         "json-to-csharp.convert",
         async (uri?: vscode.Uri) => {
 
-            let jsonText = "";
-            let filePath = "";
+            try {
+                let jsonText = "";
+                let filePath = "";
 
-            // veio do Explorer (botão direito arquivo)
-            if (uri) {
-                const data = await vscode.workspace.fs.readFile(uri);
-                jsonText = Buffer.from(data).toString("utf8");
-                filePath = uri.fsPath;
-            } else {
-                // veio do editor
                 const editor = vscode.window.activeTextEditor;
-                if (!editor) {
+                const source = uri ?? editor?.document.uri;
+                if (!source) {
                     vscode.window.showErrorMessage("No active editor");
                     return;
                 }
-
-                jsonText = editor.document.getText(editor.selection);
-                if (!jsonText || jsonText.trim().length === 0) {
-                    jsonText = editor.document.getText();
+                if (source.scheme === "untitled") {
+                    vscode.window.showErrorMessage("Save the JSON file before converting");
+                    return;
                 }
 
-                filePath = editor.document.fileName;
-            }
+                // Read using the original URI so remote filesystem providers are preserved.
+                if (uri) {
+                    const data = await vscode.workspace.fs.readFile(uri);
+                    jsonText = Buffer.from(data).toString("utf8");
+                    filePath = source.path;
+                } else {
+                    // veio do editor
+                    if (!editor) {
+                        vscode.window.showErrorMessage("No active editor");
+                        return;
+                    }
 
-            if (!jsonText || jsonText.trim().length === 0) {
-                vscode.window.showErrorMessage("No JSON found");
-                return;
-            }
+                    jsonText = editor.document.getText(editor.selection);
+                    if (!jsonText || jsonText.trim().length === 0) {
+                        jsonText = editor.document.getText();
+                    }
 
-            // valida JSON
-            try {
-                JSON.parse(jsonText);
-            } catch {
-                vscode.window.showErrorMessage("Invalid JSON");
-                return;
-            }
+                    filePath = source.path;
+                }
 
-            const fileName = path.basename(filePath);
-            const fallbackRoot = pascalCase(fileName);
+                if (!jsonText || jsonText.trim().length === 0) {
+                    vscode.window.showErrorMessage("No JSON found");
+                    return;
+                }
 
-            try {
+                // valida JSON
+                try {
+                    JSON.parse(jsonText);
+                } catch {
+                    vscode.window.showErrorMessage("Invalid JSON");
+                    return;
+                }
+
+                const fileName = path.posix.basename(filePath);
+                const fallbackRoot = pascalCase(fileName);
+
                 let csharp = await jsonToCSharp(jsonText, fallbackRoot);
                 csharp = formatCSharp(csharp);
 
                 const classMatch = /public class\s+(\w+)/.exec(csharp);
                 const className = classMatch ? classMatch[1] : fallbackRoot;
 
-                const dir = path.dirname(filePath);
-                const csPath = path.join(dir, className + ".cs");
-                const csUri = vscode.Uri.file(csPath);
+                const dir = path.posix.dirname(source.path);
+                const csUri = source.with({ path: path.posix.join(dir, className + ".cs") });
 
                 // verifica overwrite
                 let exists = true;
                 try {
                     await vscode.workspace.fs.stat(csUri);
-                } catch {
+                } catch (error) {
+                    if (!(error instanceof vscode.FileSystemError) || error.code !== "FileNotFound") {
+                        throw error;
+                    }
                     exists = false;
                 }
 
@@ -136,7 +148,6 @@ export function activate(context: vscode.ExtensionContext) {
                 const message =
                     err instanceof Error ? err.message : String(err);
                 vscode.window.showErrorMessage("Conversion failed: " + message);
-                console.error(err);
             }
         }
     );

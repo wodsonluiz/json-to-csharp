@@ -1,6 +1,6 @@
 # Change Log
 
-## [1.1.1] — Unreleased
+## [1.1.1] — 2026-11-25
 
 ### Fixed
 
@@ -13,7 +13,12 @@
 
 - Update ESLint to 10.15.0, typescript-eslint to 8.73.0 and the pinned Marketplace packager to vsce 4.1.1 using the reviewed Dependabot lockfile changes (#34, #35, #36).
 - Add five bundled Class filesystem regression tests. Publication remains gated by build, tests, SCA, CodeQL, secret scans and protected OIDC publishing.
-- Do not extend the existing development-only Moderate exception, which expires on 2026-11-30. This section describes preparation, not a completed Marketplace publication.
+- Do not extend the existing development-only Moderate exception, which expires on 2026-11-30. The exception scope is limited to vsce and minimatch; it was not extended.
+
+### Publication
+
+- Published to Visual Studio Marketplace on 2026-11-25 using the protected OIDC workflow: [publication run](https://github.com/wodsonluiz/json-to-csharp/actions/runs/45645566010).
+- Published source commit: `abecc64509d40e197df88bd30a7936b4752065c6`. GitHub release/tag must target this commit, rather than later documentation changes.
 
 ## [1.1.0] — 2026-10-31
 

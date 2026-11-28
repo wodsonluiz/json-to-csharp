@@ -102,7 +102,7 @@
     "esbuild": "0.28.2",
     "eslint": "^10.15.0",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.73.0"
+    "typescript-eslint": "^8.74.0"
   },
   "dependencies": {
     "quicktype-core": "^23.2.6",
